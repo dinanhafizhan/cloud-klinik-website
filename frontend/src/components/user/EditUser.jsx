@@ -17,7 +17,7 @@ const EditUser = () => {
 
   const getUserById = useCallback(async () => {
     try {
-      const res = await axios.get(`http://54.206.102.65:5000/users/${id}`);
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/users/${id}`);
       const data = res.data;
       setNama(data.nama);
       setEmail(data.email);
@@ -25,7 +25,7 @@ const EditUser = () => {
       setAlamat(data.alamat);
       setNo_tlp(data.no_tlp);
       if (data.foto) {
-        setCurrentFotoUrl(`http://54.206.102.65:5000/images/${data.foto}`);
+        setCurrentFotoUrl(`${process.env.REACT_APP_API_URL}/images/${data.foto}`);
       }
     } catch (err) {
       console.error("Gagal mengambil data user:", err);
@@ -58,7 +58,7 @@ const EditUser = () => {
     if (newFoto) formData.append("foto", newFoto);
 
     try {
-      await axios.patch(`http://54.206.102.65:5000/users/${id}`, formData, {
+      await axios.patch(`${process.env.REACT_APP_API_URL}/users/${id}`, formData, {
         headers: { "Content-Type": "multipart/form-data" }
       });
       navigate("/admin/user");

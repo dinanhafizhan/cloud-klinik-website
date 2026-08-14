@@ -47,7 +47,7 @@ const AddDokter = () => {
     }
 
     try {
-      await axios.post("http://54.206.102.65:5000/dokters", formData, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/dokters`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

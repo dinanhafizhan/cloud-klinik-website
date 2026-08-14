@@ -11,6 +11,7 @@ import DokterRoute from "./routes/DokterRoute.js";
 import JanjiRoute from "./routes/JanjiRoute.js";
 import JadwalRoute from "./routes/JadwalRoute.js";
 import AuthRoute from "./routes/AuthRoute.js";
+import ChatbotRoute from "./routes/ChatbotRoute.js";
 
 const app = express();
 
@@ -23,10 +24,12 @@ app.use(DokterRoute);
 app.use(JanjiRoute);
 app.use(JadwalRoute);
 app.use("/auth", AuthRoute);
+app.use("/api", ChatbotRoute);
 
 db.sync().then(async () => {
     console.log("Database connected...");
     await seedAdmin();
 });
 
-app.listen(5000, () => console.log('Server up and running on port 5000...'));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server up and running on port ${PORT}...`));

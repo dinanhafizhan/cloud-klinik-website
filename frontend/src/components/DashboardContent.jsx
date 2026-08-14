@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import LoadingSpinner from './utils/LoadingSpinner';
 import '../dashboardcontent.css';
+import Chatbot from './Chatbot';
 
 const DashboardContent = () => {
     const [summary, setSummary] = useState({
@@ -19,10 +21,10 @@ const DashboardContent = () => {
                 setError(null);
 
                 const [doktersRes, usersRes, janjiRes, jadwalRes] = await Promise.all([
-                    axios.get('http://54.206.102.65:5000/dokters'),
-                    axios.get('http://54.206.102.65:5000/users'),
-                    axios.get('http://54.206.102.65:5000/janji'),
-                    axios.get('http://54.206.102.65:5000/jadwal'),
+                    axios.get(`${process.env.REACT_APP_API_URL}/dokters`),
+                    axios.get(`${process.env.REACT_APP_API_URL}/users`),
+                    axios.get(`${process.env.REACT_APP_API_URL}/janji`),
+                    axios.get(`${process.env.REACT_APP_API_URL}/jadwal`),
                 ]);
 
                 setSummary({
@@ -64,14 +66,14 @@ const DashboardContent = () => {
 
     const handleStatusChange = async (id, newStatus) => {
         try {
-            await axios.patch(`http://54.206.102.65:5000/janji/${id}`, { status: newStatus });
+            await axios.patch(`${process.env.REACT_APP_API_URL}/janji/${id}`, { status: newStatus });
             setPendingReservations(prev => prev.filter(res => res.id !== id));
         } catch (err) {
             alert('Gagal mengubah status.');
         }
     };
 
-    if (loading) return <div>Memuat data...</div>;
+    if (loading) return <LoadingSpinner text="Memuat Dashboard..." />;
     if (error) return <div className="error-text">{error}</div>;
 
     return (
@@ -139,6 +141,8 @@ const DashboardContent = () => {
                     <p className="no-data">Tidak ada reservasi tertunda.</p>
                 )}
             </div>
+
+            <Chatbot />
         </div>
     );
 };

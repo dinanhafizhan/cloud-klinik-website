@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import LoadingSpinner from '../utils/LoadingSpinner';
 import { FaPlus, FaEdit, FaTrashAlt, FaEye, FaEyeSlash, FaSearch } from "react-icons/fa";
 import SidebarContext from "../SidebarContext"; // Import SidebarContext
 
@@ -23,11 +24,11 @@ const UserList = () => {
   const getUsers = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://54.206.102.65:5000/users");
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/users`);
       // Proses URL foto user
       const processedUsers = res.data.map(user => {
         if (user.foto && !user.foto.startsWith('http')) {
-          user.foto = `http://54.206.102.65:5000/images/${user.foto}`;
+          user.foto = `${process.env.REACT_APP_API_URL}/images/${user.foto}`;
         }
         return user;
       });
@@ -49,7 +50,7 @@ const UserList = () => {
   const handleConfirmDelete = async () => {
     if (userToDeleteId) {
       try {
-        await axios.delete(`http://54.206.102.65:5000/users/${userToDeleteId}`);
+        await axios.delete(`${process.env.REACT_APP_API_URL}/users/${userToDeleteId}`);
         getUsers(); // Refresh list
         setShowDeleteModal(false); // Close modal on success
         setUserToDeleteId(null);
@@ -119,7 +120,7 @@ const UserList = () => {
       </div>
 
       {loading ? (
-        <div style={styles.loadingProgress}>Loading data...</div>
+        <LoadingSpinner text="Memuat data user..." />
       ) : (
         <div style={styles.tableBox}>
           <table style={styles.table}>

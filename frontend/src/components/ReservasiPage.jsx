@@ -6,6 +6,8 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import 'animate.css';
 import { isAuthenticated, getLoggedInUserId } from '../utils/auth'; // Import functions from auth.js
+import Chatbot from './Chatbot';
+import LoadingSpinner from './utils/LoadingSpinner';
 
 // Initialize AOS once
 AOS.init();
@@ -45,9 +47,9 @@ const ReservasiPage = () => {
 
                 // Fetch all necessary data: users, doctors, schedules
                 const [usersRes, doktersRes, jadwalRes] = await Promise.all([
-                    axios.get('http://54.206.102.65:5000/users'),
-                    axios.get('http://54.206.102.65:5000/dokters'),
-                    axios.get('http://54.206.102.65:5000/jadwal'),
+                    axios.get(`${process.env.REACT_APP_API_URL}/users`),
+                    axios.get(`${process.env.REACT_APP_API_URL}/dokters`),
+                    axios.get(`${process.env.REACT_APP_API_URL}/jadwal`),
                 ]);
 
                 setUsers(usersRes.data);
@@ -97,7 +99,7 @@ const ReservasiPage = () => {
     useEffect(() => {
         const user = users.find(u => u.id === parseInt(selectedUser));
         if (user) {
-            const photoUrl = user.foto ? `http://54.206.102.65:5000/images/${user.foto}` : '';
+            const photoUrl = user.foto ? `${process.env.REACT_APP_API_URL}/images/${user.foto}` : '';
             setSelectedUserPhoto(photoUrl);
             setSelectedUserEmail(user.email || 'N/A');
             setSelectedUserPhone(user.no_tlp || 'N/A');
@@ -168,7 +170,7 @@ const ReservasiPage = () => {
 
         try {
             // Send reservation data to your backend
-            await axios.post('http://54.206.102.65:5000/janji', {
+            await axios.post(`${process.env.REACT_APP_API_URL}/janji`, {
                 userId: parseInt(selectedUser), // Ensure userId is an integer
                 dokterId: parseInt(selectedDokterId), // Ensure dokterId is an integer
                 jadwalId: parseInt(selectedJadwalId), // Ensure jadwalId is an integer
@@ -200,14 +202,9 @@ const ReservasiPage = () => {
     // --- Loading and Error States ---
     if (loading) {
         return (
-            <section className="hero is-fullheight is-info is-bold">
-                <div className="hero-body">
-                    <div className="container has-text-centered">
-                        <p className="title">Memuat data reservasi...</p>
-                        <progress className="progress is-small is-primary" max="100"></progress>
-                    </div>
-                </div>
-            </section>
+            <div className="reservation-container">
+                <LoadingSpinner text="Memuat halaman reservasi..." />
+            </div>
         );
     }
 
@@ -399,12 +396,12 @@ const ReservasiPage = () => {
                         <div className="has-text-centered mt-4 mb-4">
                             <figure >
                                 <img
-                                    src={`http://54.206.102.65:5000/images/${selectedDokter.foto}`}
+                                    src={`${process.env.REACT_APP_API_URL}/images/${selectedDokter.foto}`}
                                     alt={selectedDokter.nama}
                                     onError={(e) => {
                                         e.target.onerror = null;
                                         e.target.src = 'https://via.placeholder.com/128/d1c4e9/5e35b1?text=Dokter';
-                                        console.log('Error loading doctor photo!', `http://54.206.102.65:5000/images/${selectedDokter.foto}`);
+                                        console.log('Error loading doctor photo!', `${process.env.REACT_APP_API_URL}/images/${selectedDokter.foto}`);
                                     }}
                                     className="dokter-foto"
                                 />
@@ -522,7 +519,7 @@ const ReservasiPage = () => {
                             <div key={index} className="dokter-card-column">
                                 <div className="box dokter-card-content" data-aos="zoom-in" data-aos-delay={index * 100}>
                                     <img
-                                        src={`http://54.206.102.65:5000/images/${dokter.foto}`}
+                                        src={`${process.env.REACT_APP_API_URL}/images/${dokter.foto}`}
                                         alt={dokter.nama}
                                         onError={(e) => { e.target.src = '/default-foto.png'; }} // Fallback image
                                     />
@@ -618,6 +615,9 @@ const ReservasiPage = () => {
                     <p>&copy; 2025 Klinik Hafizh. All rights reserved.</p>
                 </div>
             </motion.footer>
+
+            {/* Chatbot Widget */}
+            <Chatbot />
         </div>
     );
 };

@@ -36,11 +36,11 @@ const LoginPage = () => {
 
     try {
       // 1. Send login request to the backend
-      const res = await axios.post("http://54.206.102.65:5000/auth/login", { email, password });
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/login`, { email, password });
       const { token } = res.data; // Extract the authentication token
 
       // 2. Fetch user details (including role and userId) using the obtained token
-      const meRes = await axios.get("http://54.206.102.65:5000/auth/me", {
+      const meRes = await axios.get(`${process.env.REACT_APP_API_URL}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` } // Send token in Authorization header
       });
 
@@ -80,7 +80,7 @@ const LoginPage = () => {
 
     try {
       // Perform registration
-      await axios.post("http://54.206.102.65:5000/auth/Register", {
+      await axios.post(`${process.env.REACT_APP_API_URL}/auth/Register`, {
         nama,
         email,
         password,

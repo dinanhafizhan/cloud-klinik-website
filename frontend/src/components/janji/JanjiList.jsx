@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import LoadingSpinner from '../utils/LoadingSpinner';
 import { FaPlus, FaEdit, FaTrashAlt, FaSearch } from "react-icons/fa";
 import SidebarContext from "../SidebarContext";
 
@@ -23,13 +24,13 @@ const JanjiList = () => {
   const fetchJanji = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://54.206.102.65:5000/janji");
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/janji`);
       const processedJanji = res.data.map(item => {
         if (item.user && item.user.foto && !item.user.foto.startsWith('http')) {
-          item.user.foto = `http://54.206.102.65:5000/images/${item.user.foto}`;
+          item.user.foto = `${process.env.REACT_APP_API_URL}/images/${item.user.foto}`;
         }
         if (item.dokter && item.dokter.foto && !item.dokter.foto.startsWith('http')) {
-          item.dokter.foto = `http://54.206.102.65:5000/images/${item.dokter.foto}`;
+          item.dokter.foto = `${process.env.REACT_APP_API_URL}/images/${item.dokter.foto}`;
         }
         return item;
       });
@@ -51,7 +52,7 @@ const JanjiList = () => {
   const handleConfirmDelete = async () => {
     if (janjiToDeleteId) {
       try {
-        await axios.delete(`http://54.206.102.65:5000/janji/${janjiToDeleteId}`);
+        await axios.delete(`${process.env.REACT_APP_API_URL}/janji/${janjiToDeleteId}`);
         fetchJanji();
         setShowDeleteModal(false); // Close modal on success
         setJanjiToDeleteId(null);
@@ -70,7 +71,7 @@ const JanjiList = () => {
 
   const updateStatus = async (id, newStatus) => {
     try {
-      await axios.patch(`http://54.206.102.65:5000/janji/${id}`, { status: newStatus });
+      await axios.patch(`${process.env.REACT_APP_API_URL}/janji/${id}`, { status: newStatus });
       fetchJanji();
     } catch (err) {
       console.error("Error updating status:", err);
@@ -203,7 +204,7 @@ const JanjiList = () => {
       </div>
 
       {loading ? (
-        <div style={styles.loadingProgress}>Loading data...</div>
+        <LoadingSpinner text="Memuat data janji temu..." />
       ) : (
         <div style={styles.tableBox}>
           <table style={styles.table}>

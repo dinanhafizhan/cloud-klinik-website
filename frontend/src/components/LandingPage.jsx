@@ -20,7 +20,7 @@ const LandingPage = () => {
 
     const fetchDokters = async () => {
       try {
-        const response = await axios.get('http://54.206.102.65:5000/dokters');
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/dokters`);
         setDokters(response.data);
       } catch (error) {
         console.error('Gagal mengambil data dokter:', error);
@@ -223,7 +223,7 @@ const LandingPage = () => {
               <div key={index} className="dokter-card-column">
                 <div className="box dokter-card-content" data-aos="zoom-in" data-aos-delay={index * 100}>
                   <img
-                    src={`http://54.206.102.65:5000/images/${dokter.foto}`}
+                    src={`${process.env.REACT_APP_API_URL}/images/${dokter.foto}`}
                     alt={dokter.nama}
                     onError={(e) => { e.target.src = '/default-foto.png'; }}
                   />

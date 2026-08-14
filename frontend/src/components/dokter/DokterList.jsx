@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import LoadingSpinner from '../utils/LoadingSpinner';
 import { FaPlus, FaEdit, FaTrashAlt, FaSearch } from "react-icons/fa";
 import SidebarContext from "../SidebarContext"; // Import SidebarContext
 
@@ -22,11 +23,11 @@ const DokterList = () => {
   const getDokters = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://54.206.102.65:5000/dokters");
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/dokters`);
       // Periksa dan sesuaikan URL foto dokter jika perlu
       const processedDokters = res.data.map(item => {
         if (item.foto && !item.foto.startsWith('http')) {
-          item.foto = `http://54.206.102.65:5000/images/${item.foto}`;
+          item.foto = `${process.env.REACT_APP_API_URL}/images/${item.foto}`;
         }
         return item;
       });
@@ -48,7 +49,7 @@ const DokterList = () => {
   const handleConfirmDelete = async () => {
     if (dokterToDeleteId) {
       try {
-        await axios.delete(`http://54.206.102.65:5000/dokters/${dokterToDeleteId}`);
+        await axios.delete(`${process.env.REACT_APP_API_URL}/dokters/${dokterToDeleteId}`);
         getDokters(); // Refresh list
         setShowDeleteModal(false); // Close modal on success
         setDokterToDeleteId(null);
@@ -116,7 +117,7 @@ const DokterList = () => {
       </div>
 
       {loading ? (
-        <div style={styles.loadingProgress}>Loading data...</div>
+        <LoadingSpinner text="Memuat data dokter..." />
       ) : (
         <div style={styles.tableBox}>
           <table style={styles.table}>

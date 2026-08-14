@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
+import LoadingSpinner from '../utils/LoadingSpinner';
 
 const EditJanji = () => {
   const [users, setUsers] = useState([]);
@@ -25,10 +26,10 @@ const EditJanji = () => {
       setError(null);
 
       const [usersRes, doktersRes, jadwalRes, janjiRes] = await Promise.all([
-        axios.get('http://54.206.102.65:5000/users'),
-        axios.get('http://54.206.102.65:5000/dokters'),
-        axios.get('http://54.206.102.65:5000/jadwal'),
-        axios.get(`http://54.206.102.65:5000/janji/${id}`),
+        axios.get(`${process.env.REACT_APP_API_URL}/users`),
+        axios.get(`${process.env.REACT_APP_API_URL}/dokters`),
+        axios.get(`${process.env.REACT_APP_API_URL}/jadwal`),
+        axios.get(`${process.env.REACT_APP_API_URL}/janji/${id}`),
       ]);
 
       const janji = janjiRes.data;
@@ -70,7 +71,7 @@ const EditJanji = () => {
     }
 
     try {
-      await axios.patch(`http://54.206.102.65:5000/janji/${id}`, {
+      await axios.patch(`${process.env.REACT_APP_API_URL}/janji/${id}`, {
         userId: selectedUser,
         dokterId: selectedDokterId,
         jadwalId: selectedJadwalId,
@@ -89,16 +90,7 @@ const EditJanji = () => {
 
   // Loading and Error states
   if (loading) {
-    return (
-      <section className="hero is-fullheight is-info is-bold">
-        <div className="hero-body">
-          <div className="container has-text-centered">
-            <p className="title">Memuat data...</p>
-            <progress className="progress is-small is-primary" max="100"></progress>
-          </div>
-        </div>
-      </section>
-    );
+    return <LoadingSpinner text="Memuat form edit janji..." />;
   }
 
   if (error) {
@@ -175,12 +167,11 @@ const EditJanji = () => {
                 <figure className="image is-128x128 is-inline-block mt-2">
                   <img
                     className="is-rounded"
-                    src={`http://54.206.102.65:5000/images/${selectedDokter.foto}`}
+                    src={`${process.env.REACT_APP_API_URL}/images/${selectedDokter.foto}`}
                     alt={selectedDokter.nama}
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = 'placeholder_image_url_if_any.jpg'; // Fallback image
-                      console.log('Error loading doctor photo:', `http://54.206.102.65:5000/images/${selectedDokter.foto}`);
+                      console.log('Error loading doctor photo:', `${process.env.REACT_APP_API_URL}/images/${selectedDokter.foto}`);
                     }}
                   />
                 </figure>

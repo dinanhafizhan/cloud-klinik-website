@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import LoadingSpinner from '../utils/LoadingSpinner';
 
 const AddJanji = () => {
   const [users, setUsers] = useState([]);
@@ -30,9 +31,9 @@ const AddJanji = () => {
         setError(null);
 
         const [usersRes, doktersRes, jadwalRes] = await Promise.all([
-          axios.get('http://54.206.102.65:5000/users'),
-          axios.get('http://54.206.102.65:5000/dokters'),
-          axios.get('http://54.206.102.65:5000/jadwal'),
+          axios.get(`${process.env.REACT_APP_API_URL}/users`),
+          axios.get(`${process.env.REACT_APP_API_URL}/dokters`),
+          axios.get(`${process.env.REACT_APP_API_URL}/jadwal`),
         ]);
 
         setUsers(usersRes.data);
@@ -62,7 +63,7 @@ const AddJanji = () => {
     }
 
     try {
-      await axios.post('http://54.206.102.65:5000/janji', {
+      await axios.post(`${process.env.REACT_APP_API_URL}/janji`, {
         userId: selectedUser,
         dokterId: selectedDokterId,
         jadwalId: selectedJadwalId,
@@ -90,16 +91,7 @@ const AddJanji = () => {
   const selectedDokter = dokters.find((d) => d.id === parseInt(selectedDokterId));
 
   if (loading) {
-    return (
-      <section className="hero is-fullheight is-info is-bold">
-        <div className="hero-body">
-          <div className="container has-text-centered">
-            <p className="title">Memuat data...</p>
-            <progress className="progress is-small is-primary" max="100"></progress>
-          </div>
-        </div>
-      </section>
-    );
+    return <LoadingSpinner text="Memuat form tambah janji..." />;
   }
 
   if (error) {
@@ -205,12 +197,11 @@ const AddJanji = () => {
                 <figure className="image is-128x128 is-inline-block mt-2">
                     <img
                         className="is-rounded"
-                        src={`http://54.206.102.65:5000/images/${selectedDokter.foto}`}
+                        src={`${process.env.REACT_APP_API_URL}/images/${selectedDokter.foto}`}
                         alt={selectedDokter.nama}
                         onError={(e) => {
                            e.target.onerror = null;
-                           e.target.src = 'placeholder_image_url_if_any.jpg';
-                           console.log('Error loading doctor photo!', `http://54.206.102.65:5000/images/${selectedDokter.foto}`);
+                           console.log('Error loading doctor photo!', `${process.env.REACT_APP_API_URL}/images/${selectedDokter.foto}`);
                         }}
                     />
                 </figure>
