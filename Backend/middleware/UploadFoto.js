@@ -1,16 +1,11 @@
 import multer from "multer";
-import path from "path";
 
-// Set folder penyimpanan
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "./public/images"); // buat folder ini jika belum ada
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
+// Gunakan memoryStorage agar file disimpan sebagai Buffer (file.buffer) di memori
+const storage = multer.memoryStorage();
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 } // limit 5MB
 });
-
-const upload = multer({ storage });
 
 export default upload;

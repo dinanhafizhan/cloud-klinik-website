@@ -25,7 +25,9 @@ const EditUser = () => {
       setAlamat(data.alamat);
       setNo_tlp(data.no_tlp);
       if (data.foto) {
-        setCurrentFotoUrl(`${process.env.REACT_APP_API_URL}/images/${data.foto}`);
+        setCurrentFotoUrl(data.foto.startsWith('http') ? data.foto : `${process.env.REACT_APP_API_URL}/images/${data.foto}`);
+      } else {
+        setCurrentFotoUrl("");
       }
     } catch (err) {
       console.error("Gagal mengambil data user:", err);

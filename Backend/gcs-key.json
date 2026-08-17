@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "klinik-cloud-storage",
+  "private_key_id": "04917346b9fcc81bca214ac20e81610ff212f6b8",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDNu2I60JTuIs/o\npgG76B0R/l5XnrOAIy9clV+CiRf+7fRFRgHQEoL3Jpzkbm+b8MU3hTw0tiinIGU5\n2ICSbfo8DW9OKmvw9wj0NozP04Zh7Yd8VoMZEyYIZMivnkxALR10XGvmSDiDjeQv\np4MGEc5cX7P9k0EjZIB5U8mN8k9Av4JfblWKqeSS9wmBRHuNqesY/3BAe7vmk9gv\nRhr0nsrQsTuz70ngdkoVr/6lT6Wd8sQLy3/hApfBOmBU2FJAf+KqhB6KekDO+J+F\nim1PZNz9VriEaMxe69mlHB5VmkjGYtn8piMdTk34EE4pm08kfX70+9T4xdtrLlkK\nzLg/nubjAgMBAAECggEAHa2AWBeqxEeFUnxQF7k+KFBXb7BXGI760BJEOuJn8cCF\n0lBtBoUFG34Yd+NuekJbUM0JiFkWuDU2JQgUVAtFY9BUVCROee5I/mG4ImrTIeFQ\nACHCu6VFgUR4pszhFwjrDNQgRJH6hQ+88RrrDb8X07+CiXvqk5514gqyMqXXxPEY\n7g0D4gUzCSeAdxOPbXwUJtGTmnZgM6+k/xKBz+0dZTIMRDHNPbSwLK0LaVtwMmFf\nTFsPYEpPVjssc/3b/YDDP3S6UO+cha6K+j2zWTRRMxY7IRgrIelXaT/5bsCax+O0\npkeCUuKYzjHv1K7hkP4Rr1XwgP4dw1nbRrLBmB1DsQKBgQD8J8afehFTFCzy3Cl1\nobOT3aD43GZtHKSozfUnwN3ObzuX/+PXEuyduk9GmcSXshgZz8WgzNgM/NgE71D1\nB116p7T2Z7hRjS8/x0HYwg2W/W3Xe9RiwBKhpW4Cj8y7ysd/EWO2aut8wzwf49wp\noN87OGEPasTftv6Lw13t+TQ+DwKBgQDQ3mfqg9AM9q2qlgyajeesjxphL39UQcmw\noifSJ5j7c54AQEFZlD3bVAiaaQycJHW5n1ZNQGvB1IJYYuu3rr4yEJDUCgKBHu9R\n91i67MZIxx1MEOKAM6i2YpZeh04GEH+O2x3MU82RqKaGle8RlnmHH8ayhTavvG3L\nbDRYyupd7QKBgQCv75Tfqw0xeW9PWJw47kVdE5OAcE+rLAQbn/DA9woMQoJDMREo\n/JRKDTfJG/sWmPXF9LmA08yfaz/SWaSUArqPnTpffskVZbwk9QOVmPhgdJ1Sb50l\n9bxKOyIB+ZGxKfB+UYTQP9PlLlfiLFtuVEfNiy310tpg+c6rd/ou0+VGswKBgAVA\nknxjNCgfS96uR0Lbrqe4MYGgICOOQ/QdH8M5G6+3CJIZC4ulHqkVQ+IeIiMLB6rT\nRuhKZmtJXL28PxEvY7j+kaXDWqzEimAVSDXrHlFWMHZpNkjjA6sSb5WQ8XVVlN+S\nwv0QXmr7QrS/sHNQxV2Qfv6eOvHQWzJyVh6le59BAoGAcaK3DVlt+9KxHgokHJDw\nExY9QyQLh4+4Dbo6CKp7XnXsrplbpjouPQuNvNgZPzY+NXzfh450YZFWsXCNyx7e\n5hc8N6BeIg3fma63uj9nvOJa0P4l1qRNOhgk/n/P1Sqf0XmUJvo5Ec/izbmQqLys\nWiJf7sXoOiLhiV70dXewov8=\n-----END PRIVATE KEY-----\n",
+  "client_email": "klinik-service-upload@klinik-cloud-storage.iam.gserviceaccount.com",
+  "client_id": "107391787792758097994",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/klinik-service-upload%40klinik-cloud-storage.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

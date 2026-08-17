@@ -1,5 +1,6 @@
 import User from "../models/UserModel.js";
 import bcrypt from "bcrypt";
+import { uploadToGCS } from "../config/GetStorage.js";
 
 // GET semua user
 export const getUsers = async (req, res) => {
@@ -43,12 +44,12 @@ export const createUser = async (req, res) => {
     role = "user"
   } = req.body;
 
-  let foto = null;
-  if (req.file && req.file.filename) {
-    foto = req.file.filename;
-  }
-
   try {
+    let foto = null;
+    if (req.file) {
+      foto = await uploadToGCS(req.file);
+    }
+
     if (!nama || !email || !password) {
       return res.status(400).json({ msg: "Nama, email, dan password wajib diisi." });
     }
@@ -96,8 +97,8 @@ export const updateUser = async (req, res) => {
     if (!user) return res.status(404).json({ msg: "User tidak ditemukan." });
 
     let foto = user.foto;
-    if (req.file?.filename) {
-      foto = req.file.filename;
+    if (req.file) {
+      foto = await uploadToGCS(req.file);
     }
 
     let hashPassword = user.password;

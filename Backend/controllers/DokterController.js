@@ -1,4 +1,6 @@
 import Dokter from "../models/DokterModel.js";
+import { uploadToGCS } from "../config/GetStorage.js";
+
 
 // GET semua dokter
 export const getDokters = async (req, res) => {
@@ -29,19 +31,19 @@ export const getDokterById = async (req, res) => {
 
 // POST dokter baru
 export const createDokter = async (req, res) => {
-    // Menghapus 'jadwal' dari destructuring req.body
     const { nama, gender, spesialis, no_tlp } = req.body;
-    const foto = req.file ? req.file.filename : null;
-
-    // Menghapus bagian parsing jadwal karena kolom 'jadwal' sudah tidak ada di model Dokter
 
     try {
+        let foto = null;
+        if (req.file) {
+            foto = await uploadToGCS(req.file);
+        }
+
         await Dokter.create({
             nama,
             gender,
             spesialis,
             no_tlp,
-            // Menghapus 'jadwal: jadwalObj' dari objek yang dibuat
             foto
         });
         res.status(201).json({ msg: "Dokter berhasil dibuat" });
@@ -53,23 +55,19 @@ export const createDokter = async (req, res) => {
 
 // PUT update data dokter
 export const updateDokter = async (req, res) => {
-    // Menghapus 'jadwal' dari destructuring req.body
     const { nama, gender, spesialis, no_tlp } = req.body;
 
-    const dokter = await Dokter.findOne({ where: { id: req.params.id } });
-    if (!dokter) return res.status(404).json({ msg: "Dokter tidak ditemukan" });
-
-    let foto = dokter.foto;
-    if (req.file) {
-        foto = req.file.filename;
-        // TODO: Hapus file lama dari sistem jika diperlukan
-    }
-
-    // Menghapus bagian parsing jadwal karena kolom 'jadwal' sudah tidak ada di model Dokter
-
     try {
+        const dokter = await Dokter.findOne({ where: { id: req.params.id } });
+        if (!dokter) return res.status(404).json({ msg: "Dokter tidak ditemukan" });
+
+        let foto = dokter.foto;
+        if (req.file) {
+            foto = await uploadToGCS(req.file);
+        }
+
         await Dokter.update(
-            { nama, gender, spesialis, no_tlp, foto }, // Menghapus 'jadwal: jadwalObj' dari objek update
+            { nama, gender, spesialis, no_tlp, foto },
             { where: { id: req.params.id } }
         );
         res.status(200).json({ msg: "Dokter berhasil diperbarui" });

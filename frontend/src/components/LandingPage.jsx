@@ -223,7 +223,7 @@ const LandingPage = () => {
               <div key={index} className="dokter-card-column">
                 <div className="box dokter-card-content" data-aos="zoom-in" data-aos-delay={index * 100}>
                   <img
-                    src={`${process.env.REACT_APP_API_URL}/images/${dokter.foto}`}
+                    src={dokter.foto?.startsWith('http') ? dokter.foto : `${process.env.REACT_APP_API_URL}/images/${dokter.foto}`}
                     alt={dokter.nama}
                     onError={(e) => { e.target.src = '/default-foto.png'; }}
                   />
