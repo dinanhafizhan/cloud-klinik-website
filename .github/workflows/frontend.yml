@@ -107,7 +107,8 @@ jobs:
             echo "==> Pull image frontend terbaru..."
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/klinikpemweb-frontend:latest
             
-            echo "==> Restart container frontend saja..."
+            echo "==> Menyiapkan folder dan restart container frontend..."
+            mkdir -p ~/klinikpemweb
             cd ~/klinikpemweb
             docker compose up -d --no-deps frontend
             

@@ -101,7 +101,8 @@ jobs:
             echo "==> Pull image backend terbaru..."
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/klinikpemweb-backend:latest
             
-            echo "==> Restart container backend saja..."
+            echo "==> Menyiapkan folder dan restart container backend..."
+            mkdir -p ~/klinikpemweb
             cd ~/klinikpemweb
             docker compose up -d --no-deps backend
             
