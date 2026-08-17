@@ -88,8 +88,8 @@ jobs:
     name: Deploy Frontend ke EC2
     runs-on: ubuntu-latest
     needs: dockerize-and-push
-    # Job ini akan dijalankan jika branch main DAN secret host sudah diisi
-    if: github.ref == 'refs/heads/main' && (secrets.EC2_FRONTEND_HOST != '' || secrets.EC2_HOST != '')
+    # Job ini akan dijalankan jika push ke branch main
+    if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Deploy Frontend via SSH
