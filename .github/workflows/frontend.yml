@@ -97,6 +97,14 @@ jobs:
             echo "==> Login ke DockerHub..."
             echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
+            echo "==> Bersihkan disk: hapus image, container, dan cache Docker yang tidak terpakai..."
+            docker container prune -f
+            docker image prune -a -f
+            docker volume prune -f
+            docker builder prune -f
+            echo "==> Sisa disk setelah cleanup:"
+            df -h /
+
             echo "==> Masuk ke direktori project..."
             cd ~/cloud-klinik-website
 
