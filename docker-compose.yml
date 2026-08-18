@@ -8,9 +8,9 @@ services:
       - "80:5000"
     restart: always
     volumes:
-      - ./backend/gcs-key.json:/app/gcs-key.json
+      - ./Backend/gcs-key.json:/app/gcs-key.json
     env_file:
-      - ./backend/.env
+      - ./Backend/.env
 
   frontend:
     image: ariilalhafizh/klinikpemweb-frontend:latest
