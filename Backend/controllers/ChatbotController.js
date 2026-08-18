@@ -48,31 +48,38 @@ User: ${message}
 AI:
 `;
 
-    // Daftar model yang didukung Google Gemini API secara berurutan
+    // Daftar model resmi Google Gemini yang aktif dan berkinerja tinggi
     const candidateModels = [
-      "gemini-3.6-flash",
-      "gemini-2.5-flash",
       "gemini-2.0-flash",
-      "gemini-1.5-flash",
-      "gemini-1.5-pro",
+      "gemini-1.5-flash"
     ];
 
     let responseText = null;
     let lastError = null;
 
-    for (const modelName of candidateModels) {
-      try {
-        const result = await ai.models.generateContent({
+    // Helper timeout 10 detik agar tidak melebihi batas 30 detik CloudFront
+    const generateWithTimeout = (modelName, timeoutMs = 10000) => {
+      return Promise.race([
+        ai.models.generateContent({
           model: modelName,
           contents: prompt,
-        });
+        }),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error(`Timeout memanggil model ${modelName}`)), timeoutMs)
+        )
+      ]);
+    };
+
+    for (const modelName of candidateModels) {
+      try {
+        const result = await generateWithTimeout(modelName, 10000);
         if (result && result.text) {
           responseText = result.text;
           break;
         }
       } catch (err) {
         lastError = err;
-        console.warn(`Model ${modelName} gagal:`, err.message);
+        console.warn(`Model ${modelName} gagal atau timeout:`, err.message);
       }
     }
 
