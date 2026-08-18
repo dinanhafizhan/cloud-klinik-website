@@ -3,19 +3,18 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-});
-
 export const handleChat = async (req, res) => {
   try {
     const { message, history = [] } = req.body;
 
-    if (!process.env.GEMINI_API_KEY) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
       return res.status(500).json({
-        error: "GEMINI_API_KEY belum diatur.",
+        error: "GEMINI_API_KEY belum diatur di server.",
       });
     }
+
+    const ai = new GoogleGenAI({ apiKey });
 
     // Susun riwayat percakapan
     const conversation = history
@@ -49,16 +48,28 @@ User: ${message}
 AI:
 `;
 
-    const result = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
-      contents: prompt,
-    });
+    // Gunakan gemini-2.5-flash (atau gemini-1.5-flash sebagai fallback)
+    let responseText = "";
+    try {
+      const result = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: prompt,
+      });
+      responseText = result.text;
+    } catch (modelErr) {
+      console.warn("Gagal dengan gemini-2.5-flash, mencoba gemini-1.5-flash:", modelErr.message);
+      const fallbackResult = await ai.models.generateContent({
+        model: "gemini-1.5-flash",
+        contents: prompt,
+      });
+      responseText = fallbackResult.text;
+    }
 
     res.json({
-      reply: result.text,
+      reply: responseText,
     });
   } catch (err) {
-    console.error(err);
+    console.error("Error pada handleChat:", err);
 
     if (err.status === 429) {
       return res.status(429).json({
@@ -68,7 +79,7 @@ AI:
     }
 
     return res.status(500).json({
-      error: "Terjadi kesalahan pada chatbot.",
+      error: err.message || "Terjadi kesalahan pada chatbot.",
     });
   }
 };
