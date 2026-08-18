@@ -103,17 +103,31 @@ jobs:
             set -e
             echo "==> Login ke DockerHub..."
             echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-            
+
             echo "==> Pull image frontend terbaru..."
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/klinikpemweb-frontend:latest
-            
-            echo "==> Menyiapkan folder dan restart container frontend..."
-            mkdir -p ~/klinikpemweb
-            cd ~/klinikpemweb
-            docker compose up -d --no-deps frontend
-            
+
+            echo "==> Masuk ke direktori project..."
+            cd ~/cloud-klinik-website
+
+            echo "==> Membuat docker-compose.yml di server..."
+            cat > docker-compose.yml << 'COMPOSE_EOF'
+            services:
+              frontend:
+                image: ${{ secrets.DOCKERHUB_USERNAME }}/klinikpemweb-frontend:latest
+                container_name: klinikpemweb_frontend
+                ports:
+                  - "80:3000"
+                restart: always
+                env_file:
+                  - ./frontend/.env
+            COMPOSE_EOF
+
+            echo "==> Restart container frontend..."
+            docker compose up -d --no-deps --pull always frontend
+
             echo "==> Hapus image lama yang tidak terpakai..."
             docker image prune -f
-            
+
             echo "==> Status container:"
             docker compose ps frontend
