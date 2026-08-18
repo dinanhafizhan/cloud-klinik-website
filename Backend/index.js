@@ -17,14 +17,23 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use('/images', express.static('public/images'));
+// Routes dengan prefix /api (CloudFront / Production)
+app.use('/api', UserRoute);
+app.use('/api', DokterRoute);
+app.use('/api', JanjiRoute);
+app.use('/api', JadwalRoute);
+app.use('/api/auth', AuthRoute);
+app.use('/api/images', express.static('public/images'));
+app.use('/api', ChatbotRoute);
 
+// Fallback routes tanpa prefix /api (Direct access / Local dev)
 app.use(UserRoute);
 app.use(DokterRoute);
 app.use(JanjiRoute);
 app.use(JadwalRoute);
-app.use("/auth", AuthRoute);
-app.use("/api", ChatbotRoute);
+app.use('/auth', AuthRoute);
+app.use('/images', express.static('public/images'));
+app.use(ChatbotRoute);
 
 db.sync().then(async () => {
     console.log("Database connected...");

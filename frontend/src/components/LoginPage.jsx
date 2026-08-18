@@ -80,7 +80,7 @@ const LoginPage = () => {
 
     try {
       // Perform registration
-      await axios.post(`${process.env.REACT_APP_API_URL}/auth/Register`, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/auth/register`, {
         nama,
         email,
         password,

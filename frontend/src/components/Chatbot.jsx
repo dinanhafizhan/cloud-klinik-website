@@ -49,7 +49,7 @@ const Chatbot = () => {
                 parts: [{ text: msg.text }]
             }));
 
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/chat`, {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/chat`, {
                 message: userMessage,
                 history: history
             });
