@@ -97,17 +97,33 @@ jobs:
             set -e
             echo "==> Login ke DockerHub..."
             echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-            
+
             echo "==> Pull image backend terbaru..."
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/klinikpemweb-backend:latest
-            
-            echo "==> Menyiapkan folder dan restart container backend..."
+
+            echo "==> Menyiapkan folder..."
             mkdir -p ~/klinikpemweb
             cd ~/klinikpemweb
-            docker compose up -d --no-deps backend
-            
+
+            echo "==> Membuat docker-compose.yml di server..."
+            cat > docker-compose.yml << 'EOF'
+            version: '3.8'
+            services:
+              backend:
+                image: ${{ secrets.DOCKERHUB_USERNAME }}/klinikpemweb-backend:latest
+                container_name: klinikpemweb_backend
+                ports:
+                  - "5000:5000"
+                restart: always
+                env_file:
+                  - ./backend.env
+            EOF
+
+            echo "==> Restart container backend..."
+            docker compose up -d --no-deps --pull always backend
+
             echo "==> Hapus image lama yang tidak terpakai..."
             docker image prune -f
-            
+
             echo "==> Status container:"
             docker compose ps backend
