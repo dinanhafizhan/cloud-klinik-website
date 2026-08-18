@@ -5,7 +5,7 @@ services:
     image: ariilalhafizh/klinikpemweb-backend:latest
     container_name: klinikpemweb_backend
     ports:
-      - "5000:5000"
+      - "80:5000"
     restart: always
     volumes:
       - ./backend/gcs-key.json:/app/gcs-key.json
