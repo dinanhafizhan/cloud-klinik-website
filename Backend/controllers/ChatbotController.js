@@ -48,47 +48,18 @@ User: ${message}
 AI:
 `;
 
-    // Daftar model resmi Google Gemini yang aktif dan berkinerja tinggi
-    const candidateModels = [
-      "gemini-2.0-flash",
-      "gemini-1.5-flash"
-    ];
+    const modelName = "gemini-3.6-flash";
+    const result = await ai.models.generateContent({
+      model: modelName,
+      contents: prompt,
+    });
 
-    let responseText = null;
-    let lastError = null;
-
-    // Helper timeout 10 detik agar tidak melebihi batas 30 detik CloudFront
-    const generateWithTimeout = (modelName, timeoutMs = 10000) => {
-      return Promise.race([
-        ai.models.generateContent({
-          model: modelName,
-          contents: prompt,
-        }),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error(`Timeout memanggil model ${modelName}`)), timeoutMs)
-        )
-      ]);
-    };
-
-    for (const modelName of candidateModels) {
-      try {
-        const result = await generateWithTimeout(modelName, 10000);
-        if (result && result.text) {
-          responseText = result.text;
-          break;
-        }
-      } catch (err) {
-        lastError = err;
-        console.warn(`Model ${modelName} gagal atau timeout:`, err.message);
-      }
-    }
-
-    if (!responseText) {
-      throw lastError || new Error("Semua model Gemini gagal merespons.");
+    if (!result || !result.text) {
+      throw new Error(`Model ${modelName} tidak mengembalikan teks jawaban.`);
     }
 
     res.json({
-      reply: responseText,
+      reply: result.text,
     });
   } catch (err) {
     console.error("Error pada handleChat:", err);
