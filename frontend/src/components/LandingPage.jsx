@@ -6,6 +6,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { isAuthenticated, logout } from '../utils/auth';
 import axios from 'axios';
+import Chatbot from './Chatbot';
 
 const LandingPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -335,6 +336,9 @@ const LandingPage = () => {
           <p>&copy; 2025 Klinik Hafizh. All rights reserved.</p>
         </div>
       </motion.footer>
+
+      {/* Chatbot Widget untuk User di Landing Page */}
+      <Chatbot />
 
     </div>
   );

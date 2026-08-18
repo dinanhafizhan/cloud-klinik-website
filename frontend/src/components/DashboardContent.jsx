@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import LoadingSpinner from './utils/LoadingSpinner';
 import '../dashboardcontent.css';
-import Chatbot from './Chatbot';
 
 const DashboardContent = () => {
     const [summary, setSummary] = useState({
@@ -141,8 +140,6 @@ const DashboardContent = () => {
                     <p className="no-data">Tidak ada reservasi tertunda.</p>
                 )}
             </div>
-
-            <Chatbot />
         </div>
     );
 };
