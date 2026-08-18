@@ -48,18 +48,47 @@ User: ${message}
 AI:
 `;
 
-    const modelName = "gemini-3.6-flash";
-    const result = await ai.models.generateContent({
-      model: modelName,
-      contents: prompt,
-    });
+    // Model utama: gemini-3.6-flash, Cadangan otomatis: gemini-2.0-flash
+    const candidateModels = [
+      "gemini-3.6-flash",
+      "gemini-2.0-flash"
+    ];
 
-    if (!result || !result.text) {
-      throw new Error(`Model ${modelName} tidak mengembalikan teks jawaban.`);
+    let responseText = null;
+    let lastError = null;
+
+    // Timeout 8 detik per model agar total waktu selalu jauh di bawah 30 detik CloudFront
+    const generateWithTimeout = (modelName, timeoutMs = 8000) => {
+      return Promise.race([
+        ai.models.generateContent({
+          model: modelName,
+          contents: prompt,
+        }),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error(`Timeout memanggil model ${modelName}`)), timeoutMs)
+        )
+      ]);
+    };
+
+    for (const modelName of candidateModels) {
+      try {
+        const result = await generateWithTimeout(modelName, 8000);
+        if (result && result.text) {
+          responseText = result.text;
+          break; // Berhasil, keluar dari loop
+        }
+      } catch (err) {
+        lastError = err;
+        console.warn(`Model ${modelName} gagal/503: ${err.message}. Beralih ke model cadangan...`);
+      }
+    }
+
+    if (!responseText) {
+      throw lastError || new Error("Semua model Gemini sedang sibuk. Silakan coba sesaat lagi.");
     }
 
     res.json({
-      reply: result.text,
+      reply: responseText,
     });
   } catch (err) {
     console.error("Error pada handleChat:", err);
