@@ -101,13 +101,11 @@ jobs:
             echo "==> Pull image backend terbaru..."
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/klinikpemweb-backend:latest
 
-            echo "==> Menyiapkan folder..."
-            mkdir -p ~/klinikpemweb
-            cd ~/klinikpemweb
+            echo "==> Masuk ke direktori project..."
+            cd ~/cloud-klinik-website
 
             echo "==> Membuat docker-compose.yml di server..."
-            cat > docker-compose.yml << 'EOF'
-            version: '3.8'
+            cat > docker-compose.yml << 'COMPOSE_EOF'
             services:
               backend:
                 image: ${{ secrets.DOCKERHUB_USERNAME }}/klinikpemweb-backend:latest
@@ -115,9 +113,11 @@ jobs:
                 ports:
                   - "5000:5000"
                 restart: always
+                volumes:
+                  - ./Backend/gcs-key.json:/app/gcs-key.json
                 env_file:
-                  - ./backend.env
-            EOF
+                  - ./Backend/.env
+            COMPOSE_EOF
 
             echo "==> Restart container backend..."
             docker compose up -d --no-deps --pull always backend
