@@ -48,43 +48,34 @@ User: ${message}
 AI:
 `;
 
-    // Model utama: gemini-3.6-flash, Cadangan otomatis: gemini-2.0-flash
-    const candidateModels = [
-      "gemini-3.6-flash",
-      "gemini-2.0-flash"
-    ];
-
+    const modelName = "gemini-3.6-flash";
     let responseText = null;
     let lastError = null;
 
-    // Timeout 8 detik per model agar total waktu selalu jauh di bawah 30 detik CloudFront
-    const generateWithTimeout = (modelName, timeoutMs = 8000) => {
-      return Promise.race([
-        ai.models.generateContent({
+    // Coba memanggil gemini-3.6-flash hingga 2 kali jika ada lonjakan trafik sementara (503)
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const result = await ai.models.generateContent({
           model: modelName,
           contents: prompt,
-        }),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error(`Timeout memanggil model ${modelName}`)), timeoutMs)
-        )
-      ]);
-    };
+        });
 
-    for (const modelName of candidateModels) {
-      try {
-        const result = await generateWithTimeout(modelName, 8000);
         if (result && result.text) {
           responseText = result.text;
-          break; // Berhasil, keluar dari loop
+          break;
         }
       } catch (err) {
         lastError = err;
-        console.warn(`Model ${modelName} gagal/503: ${err.message}. Beralih ke model cadangan...`);
+        console.warn(`Percobaan ${attempt} ke ${modelName} gagal (${err.message})...`);
+        if (attempt < 2) {
+          // Tunggu 1 detik sebelum mencoba lagi
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
       }
     }
 
     if (!responseText) {
-      throw lastError || new Error("Semua model Gemini sedang sibuk. Silakan coba sesaat lagi.");
+      throw lastError || new Error(`Model ${modelName} tidak mengembalikan jawaban.`);
     }
 
     res.json({
