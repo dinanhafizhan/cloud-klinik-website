@@ -48,21 +48,36 @@ User: ${message}
 AI:
 `;
 
-    // Gunakan gemini-2.5-flash (atau gemini-1.5-flash sebagai fallback)
-    let responseText = "";
-    try {
-      const result = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: prompt,
-      });
-      responseText = result.text;
-    } catch (modelErr) {
-      console.warn("Gagal dengan gemini-2.5-flash, mencoba gemini-1.5-flash:", modelErr.message);
-      const fallbackResult = await ai.models.generateContent({
-        model: "gemini-1.5-flash",
-        contents: prompt,
-      });
-      responseText = fallbackResult.text;
+    // Daftar model yang didukung Google Gemini API secara berurutan
+    const candidateModels = [
+      "gemini-2.5-flash",
+      "gemini-2.0-flash",
+      "gemini-1.5-flash-latest",
+      "gemini-1.5-pro",
+      "gemini-pro",
+    ];
+
+    let responseText = null;
+    let lastError = null;
+
+    for (const modelName of candidateModels) {
+      try {
+        const result = await ai.models.generateContent({
+          model: modelName,
+          contents: prompt,
+        });
+        if (result && result.text) {
+          responseText = result.text;
+          break;
+        }
+      } catch (err) {
+        lastError = err;
+        console.warn(`Model ${modelName} gagal:`, err.message);
+      }
+    }
+
+    if (!responseText) {
+      throw lastError || new Error("Semua model Gemini gagal merespons.");
     }
 
     res.json({
