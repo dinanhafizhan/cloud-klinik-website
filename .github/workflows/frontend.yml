@@ -72,8 +72,11 @@ jobs:
           tags: |
             ${{ env.FRONTEND_IMAGE }}:latest
             ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+          build-args: |
+            REACT_APP_API_URL=/api
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
 
   # ─────────────────────────────────────────────
   # JOB 3: Deploy Frontend ke EC2 via SSH
